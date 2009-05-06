@@ -6,18 +6,20 @@ require "rack/test"
 require File.dirname(__FILE__) + "/../lib/bobette"
 
 class FakeBuildable
-  def initialize(payload); end
-
-  def uri
-    "git://github.com/foo/bar.git"
+  def initialize(payload)
+    @payload = payload
   end
 
-  def branch
-    "master"
+  def uri
+    @payload["repository"]["url"]
   end
 
   def kind
-    :git
+    URI(uri).scheme
+  end
+
+  def branch
+    @payload["ref"].split("/").last
   end
 end
 

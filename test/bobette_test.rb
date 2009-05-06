@@ -2,9 +2,9 @@ require File.dirname(__FILE__) + "/test_helper"
 
 class BobetteTest < BobetteTestCase
   def payload
-    { "ref"        => "ref",
-      "commits"    => [{"id" => "commit.id"}],
-      "repository" => {"url" => "http://repo_url"} }
+    { "ref"        => "refs/heads/master",
+      "commits"    => [{"id" => "8667fbb"}],
+      "repository" => {"url" => "git://github.com/sr/bobette.git"} }
   end
 
   setup do
