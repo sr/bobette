@@ -17,7 +17,9 @@ module Bobette
     end
 
     def payload
-      JSON.parse(request.POST["payload"])
+      JSON.parse(request.POST["payload"] || "")
+    rescue JSON::JSONError
+      halt 400
     end
   end
 end
