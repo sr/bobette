@@ -9,8 +9,7 @@ module Bobette
 
   class App < Sinatra::Base
     post "/" do
-      # TODO: Buildable should implement #commits too?
-      # TODO: Also, why not use an Hash instead?
+      # TODO: require a buildable to implement `#commits`?
       buildable = Bobette.buildable.new(payload)
 
       Bob.build(buildable, payload["commits"])

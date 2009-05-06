@@ -17,7 +17,7 @@ class BobetteTest < BobetteTestCase
     stub(FakeBuildable).new(payload) { @buildable }
     stub(Bob).build(@buildable, payload["commits"]) { nil }
 
-    post("/", :payload => payload.to_json).ok?
+    assert post("/", :payload => payload.to_json).ok?
   end
 
   test "400 with invalid JSON" do
