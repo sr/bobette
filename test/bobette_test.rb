@@ -30,7 +30,14 @@ class BobetteTest < BobetteTestCase
   test "building an Integrity::BuildableProject" do
     post("/", :payload => payload(@repo.commits, @repo.path))
 
+    assert_equal 2, @project.commits.count
     assert_equal :failed, @project.status
+    assert @project.commits.last.output.include?("No such file")
+
+    @repo.add_successful_commit
+    post("/", :payload => payload([@repo.commits.first], @repo.path))
+
+    assert_equal :success, @project.status
   end
 
   test "400 with invalid JSON" do
