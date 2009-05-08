@@ -30,7 +30,7 @@ class BobetteTest < BobetteTestCase
     DataMapper.auto_migrate!
     Bob.logger = Logger.new("/dev/null")
     Bob.directory = File.expand_path(File.dirname(__FILE__))
-    Bobette.buildable = Bobette::Integrity::Project
+    Bobette.buildable = Integrity::BuildableProject
 
     repo = GitRepo.new(:my_test_project)
     project = Integrity::Project.gen(:my_test_project, :uri => repo.path)
