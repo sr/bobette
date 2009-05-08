@@ -2,8 +2,11 @@ require "test/unit"
 require "contest"
 require "rr"
 require "rack/test"
+require "ruby-debug"
+require "integrity/notifier/test"
 
 require File.dirname(__FILE__) + "/../lib/bobette"
+require File.dirname(__FILE__) + "/helper/git_helper"
 
 class FakeBuildable
   def initialize(payload)
@@ -30,6 +33,7 @@ class BobetteTestCase < Test::Unit::TestCase
 
   include RR::Adapters::TestUnit
   include Rack::Test::Methods
+  include TestHelper
 
   def app
     Bobette::App.tap { |app| app.set(:environment, :test) }
