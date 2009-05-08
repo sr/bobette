@@ -1,6 +1,24 @@
-require File.dirname(__FILE__) + "/helper"
+require "test/unit"
+require "contest"
+require "rack/test"
+require "integrity/notifier/test"
 
-class BobetteTest < BobetteTestCase
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
+
+require "bobette"
+require "integrity/buildable_project"
+
+require "helper/git_helper"
+
+class BobetteTest < Test::Unit::TestCase
+  include Rack::Test::Methods
+  include TestHelper
+
+  def app
+    Bobette::App.tap { |app| app.set(:environment, :test) }
+  end
+
   def payload(commits, url)
     { "ref"        => "refs/heads/master",
       "commits"    => commits.map { |c| { "id" => c[:identifier] } },
