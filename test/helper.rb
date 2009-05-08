@@ -9,10 +9,6 @@ require File.dirname(__FILE__) + "/../lib/integrity/buildable_project"
 require File.dirname(__FILE__) + "/helper/git_helper"
 
 class BobetteTestCase < Test::Unit::TestCase
-  class << self
-    alias_method :it, :test
-  end
-
   include Rack::Test::Methods
   include TestHelper
 
