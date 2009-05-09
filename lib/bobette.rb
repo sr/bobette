@@ -1,4 +1,3 @@
-require "sinatra/base"
 require "bob"
 require "json"
 
@@ -9,16 +8,17 @@ module Bobette
     attr_accessor :buildable
   end
 
-  class App < Sinatra::Base
-    post "/" do
-      Bobette.buildable.new(payload).
-        build(payload["commits"].map { |c| c["id"] })
-    end
+  class App
+    def call(env)
+      request = Rack::Request.new(env)
+      payload = JSON.parse(request.POST["payload"] || "")
+      commits = payload["commits"].collect { |c| c["id"] }
 
-    def payload
-      JSON.parse(request.POST["payload"] || "")
+      Bobette.buildable.new(payload).build(commits)
+
+      Rack::Response.new("OK", 200).finish
     rescue JSON::JSONError
-      halt 400
+      Rack::Response.new("Unparsable payload", 400).finish
     end
   end
 end
