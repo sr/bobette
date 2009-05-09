@@ -16,7 +16,7 @@ module Integrity
     end
 
     def kind
-      :git # TODO @kind ||= URI(uri).scheme.to_sym
+      :git
     end
 
     alias_method :build_script, :command
