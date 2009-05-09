@@ -2,6 +2,8 @@ require "integrity"
 
 module Integrity
   class BuildableProject
+    include Bob::Buildable
+
     extend Forwardable
     def_delegators :project, :branch, :command
 

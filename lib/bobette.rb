@@ -11,10 +11,8 @@ module Bobette
 
   class App < Sinatra::Base
     post "/" do
-      # TODO: require a buildable to implement `#commits`?
-      buildable = Bobette.buildable.new(payload)
-
-      Bob.build(buildable, payload["commits"].map { |c| c["id"] })
+      Bobette.buildable.new(payload).
+        build(payload["commits"].map { |c| c["id"] })
     end
 
     def payload
