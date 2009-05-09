@@ -52,15 +52,20 @@ class BobetteTest < Test::Unit::TestCase
   end
 
   test "building an Integrity::BuildableProject" do
-    post("/", :payload => payload(@repo.commits, @repo.path))
+    assert post("/", :payload => payload(@repo.commits, @repo.path)).ok?
 
     assert_equal 2, @project.commits.count
-    assert_equal :failed, @project.status
-    assert @project.commits.last.output.include?("No such file")
+
+    commit = @project.commits.first(:identifier => @repo.commits.last[:identifier])
+    assert_equal "This commit will fail", commit.message
+    assert_equal :failed,                 commit.status
+    assert_equal "Running tests...\n",    commit.output
 
     @repo.add_successful_commit
-    post("/", :payload => payload([@repo.commits.first], @repo.path))
+    post("/", :payload => payload([@repo.commits.last], @repo.path))
 
+    assert_equal 3, @project.commits.count
+    assert_equal "This commit will work", @project.last_commit.message
     assert_equal :success, @project.status
   end
 
