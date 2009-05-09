@@ -22,7 +22,7 @@ class Bobette::TestCase < Test::Unit::TestCase
   include TestHelper
 
   def app
-    Rack::Lint.new(Bobette::App.new)
+    Rack::Lint.new(Bobette)
   end
 
   def payload(commits, url, branch="master")
