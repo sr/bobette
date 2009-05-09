@@ -3,6 +3,12 @@ require "contest"
 require "rack/test"
 require "integrity/notifier/test"
 
+begin
+  require "ruby-debug"
+  require "redgreen"
+rescue LoadError
+end
+
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 
