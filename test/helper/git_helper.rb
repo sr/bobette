@@ -22,7 +22,7 @@ module TestHelper
           format  = "---%n:message: >-%n  %s%n:timestamp: %ci%n" +
             ":identifier: %H%n:author: %n :name: %an%n :email: %ae%n"
           commits << YAML.load(`git show -s --pretty=format:"#{format}" #{sha1}`)
-        end
+        end.reverse
       end
     end
 
