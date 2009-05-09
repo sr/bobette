@@ -25,8 +25,8 @@ class BobetteTest < Test::Unit::TestCase
     Bobette::App.tap { |app| app.set(:environment, :test) }
   end
 
-  def payload(commits, url)
-    { "ref"        => "refs/heads/master",
+  def payload(commits, url, branch="master")
+    { "ref"        => "refs/heads/#{branch}",
       "commits"    => commits.map { |c| { "id" => c[:identifier] } },
       "repository" => {"url" => url} }.to_json
   end
@@ -67,6 +67,13 @@ class BobetteTest < Test::Unit::TestCase
     assert_equal 3, @project.commits.count
     assert_equal "This commit will work", @project.last_commit.message
     assert_equal :success, @project.status
+  end
+
+  test "ignores branches that aren't watched by associated project" do
+    post("/", :payload => payload(@repo.commits, @repo.path, "foo")) {
+      |response| assert response.ok? }
+
+    assert_equal 0, @project.commits.count
   end
 
   test "400 with invalid JSON" do
