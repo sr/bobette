@@ -13,7 +13,10 @@ module Bobette
     payload = JSON.parse(request.POST["payload"] || "")
     commits = payload["commits"].collect { |c| c["id"] }
 
-    Bobette.buildable.new(payload).build(commits)
+    action = Proc.new { Bobette.buildable.new(payload).build(commits) }
+
+    (const_defined?(:EM) && EM.reactor_running?) ?
+      EM.defer(action) : action.call
 
     Rack::Response.new("OK", 200).finish
   rescue JSON::JSONError

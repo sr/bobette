@@ -50,4 +50,13 @@ class BobetteTest < Bobette::TestCase
     assert post("/").client_error?
     assert post("/", :payload => "</3").client_error?
   end
+
+  test "works with EM" do
+    require "eventmachine"
+
+    EM.run {
+      assert post("/", :payload => payload(@repo.commits, @repo.path)).ok?
+      EM.stop_event_loop
+    }
+  end
 end
