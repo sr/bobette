@@ -15,6 +15,10 @@ module TestHelper
       end
     end
 
+    def destroy
+      FileUtils.rm_rf @path
+    end
+
     def commits
       Dir.chdir(@path) do
         commits = `git log --pretty=oneline`.collect { |l| l.split(" ").first }
