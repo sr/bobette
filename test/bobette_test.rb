@@ -1,25 +1,6 @@
 require File.dirname(__FILE__) + "/helper"
 
 class BobetteTest < Bobette::TestCase
-  def setup
-    super
-
-    @metadata = {}
-    @builds   = {}
-
-    Beacon.watch(:start) { |commit_id, commit_info|
-      @metadata[commit_id] = commit_info
-    }
-
-    Beacon.watch(:finish) { |commit_id, status, output|
-      @builds[commit_id] = [status ? :successful : :failed, output]
-    }
-  end
-
-  def teardown
-    @repo.destroy
-  end
-
   def test_valid_payload
     assert post("/", payload(@repo).to_json).ok?
 

@@ -35,6 +35,17 @@ class Bobette::TestCase < Test::Unit::TestCase
     3.times { |i|
       i.odd? ? @repo.add_successful_commit : @repo.add_failing_commit
     }
+
+    @metadata = {}
+    @builds   = {}
+
+    Beacon.watch(:start) { |commit_id, commit_info|
+      @metadata[commit_id] = commit_info
+    }
+
+    Beacon.watch(:finish) { |commit_id, status, output|
+      @builds[commit_id] = [status ? :successful : :failed, output]
+    }
   end
 
   def teardown
