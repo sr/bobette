@@ -1,8 +1,6 @@
 require "bob"
 require "json"
 
-require "forwardable"
-
 module Bobette
   class << self
     attr_accessor :buildable
