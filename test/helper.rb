@@ -1,7 +1,6 @@
 require "test/unit"
-require "contest"
 require "rack/test"
-require "integrity/notifier/test"
+require "beacon"
 
 begin
   require "ruby-debug"
@@ -13,22 +12,43 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 
 require "bobette"
-require "integrity/buildable_project"
 
 require "helper/git_helper"
+require "helper/buildable_stub"
+
+class Test::Unit::TestSuite
+  def empty?
+    false
+  end
+end
 
 class Bobette::TestCase < Test::Unit::TestCase
   include Rack::Test::Methods
   include TestHelper
 
-  def app
-    Rack::Lint.new(Bobette.new(Integrity::BuildableProject))
+  def setup
+    Bob.logger = Logger.new("/dev/null")
+    Bob.directory = File.expand_path(File.dirname(__FILE__))
+
+    @repo = GitRepo.new(:my_test_project)
+    @repo.create
+    3.times { |i|
+      i.odd? ? @repo.add_successful_commit : @repo.add_failing_commit
+    }
   end
 
-  def payload(commits, url, branch="master")
-    { "ref"        => "refs/heads/#{branch}",
-      "commits"    => commits.map { |c| { "id" => c[:identifier] } },
-      "repository" => {"url" => url} }.to_json
+  def teardown
+    @repo.destroy
+  end
+
+  def app
+    @app ||= Rack::Lint.new(Bobette.new(BuildableStub))
+  end
+
+  def payload(repo, branch="master")
+    { "branch"  => branch,
+      "commits" => repo.commits.map { |c| {"id" => c[:identifier]} },
+      "uri"     => repo.path }
   end
 end
 

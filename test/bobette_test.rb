@@ -1,59 +1,48 @@
 require File.dirname(__FILE__) + "/helper"
 
 class BobetteTest < Bobette::TestCase
-  setup do
-    DataMapper.setup(:default, "sqlite3::memory:")
-    DataMapper.auto_migrate!
+  def setup
+    super
 
-    Bob.logger = Logger.new("/dev/null")
-    Bob.directory = File.expand_path(File.dirname(__FILE__))
+    @metadata = {}
+    @builds   = {}
 
-    @repo = GitRepo.new(:my_test_project)
-    @repo.create
-    @repo.add_failing_commit
+    Beacon.watch(:start) { |commit_id, commit_info|
+      @metadata[commit_id] = commit_info
+    }
 
-    @project = Integrity::Project.gen(:my_test_project, :uri => @repo.path)
+    Beacon.watch(:finish) { |commit_id, status, output|
+      @builds[commit_id] = [status ? :successful : :failed, output]
+    }
   end
 
-  teardown do
-    FileUtils.rm_rf(@repo.path)
+  def teardown
+    @repo.destroy
   end
 
-  test "building an Integrity::BuildableProject" do
-    assert post("/", :payload => payload(@repo.commits, @repo.path)).ok?
+  def test_valid_payload
+    assert post("/", :payload => payload(@repo).to_json).ok?
 
-    assert_equal 2, @project.commits.count
+    assert_equal 4, @metadata.count
+    assert_equal 4, @builds.count
 
-    commit = @project.commits.first(:identifier => @repo.commits.last[:identifier])
-    assert_equal "This commit will fail", commit.message
-    assert_equal :failed,                 commit.status
-    assert_equal "Running tests...\n",    commit.output
+    commit = @repo.head
 
-    @repo.add_successful_commit
-    post("/", :payload => payload([@repo.commits.last], @repo.path))
-
-    assert_equal 3, @project.commits.count
-    assert_equal "This commit will work", @project.last_commit.message
-    assert_equal :success, @project.status
+    assert_equal :failed, @builds[commit].first
+    assert_equal "Running tests...\n", @builds[commit].last
+    assert_equal "This commit will fail", @metadata[commit][:message]
   end
 
-  test "ignores branches that aren't watched by associated project" do
-    post("/", :payload => payload(@repo.commits, @repo.path, "foo")) {
-      |response| assert response.ok? }
-
-    assert_equal 0, @project.commits.count
-  end
-
-  test "400 with invalid JSON" do
+  def test_invalid_payload
     assert post("/").client_error?
     assert post("/", :payload => "</3").client_error?
   end
 
-  test "works with EM" do
+  def test_with_em
     require "eventmachine"
 
     EM.run {
-      assert post("/", :payload => payload(@repo.commits, @repo.path)).ok?
+      assert post("/", :payload => payload(@repo).to_json).ok?
       EM.stop_event_loop
     }
   end
