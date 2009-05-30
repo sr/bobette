@@ -1,21 +1,27 @@
 require "bob"
 
-class Bobette
-  attr_accessor :buildable
-
-  def initialize(buildable)
-    @buildable = buildable
+module Bobette
+  def self.new(buildable)
+    App.new(buildable)
   end
 
-  def call(env)
-    payload = env["bobette.payload"]
-    commits = payload["commits"].collect { |c| c["id"] }
+  class App
+    attr_accessor :buildable
 
-    action = Proc.new { @buildable.new(payload).build(commits) }
+    def initialize(buildable)
+      @buildable = buildable
+    end
 
-    (Object.const_defined?(:EM) && EM.reactor_running?) ?
-      EM.defer(action) : action.call
+    def call(env)
+      payload = env["bobette.payload"]
+      commits = payload["commits"].collect { |c| c["id"] }
 
-    Rack::Response.new("OK", 200).finish
+      action = Proc.new { @buildable.new(payload).build(commits) }
+
+      (Object.const_defined?(:EM) && EM.reactor_running?) ?
+        EM.defer(action) : action.call
+
+      Rack::Response.new("OK", 200).finish
+    end
   end
 end

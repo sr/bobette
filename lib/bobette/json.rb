@@ -1,6 +1,6 @@
 require "json"
 
-class Bobette
+module Bobette
   class JSON
     def initialize(app)
       @app = app

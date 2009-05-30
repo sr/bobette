@@ -1,4 +1,4 @@
-class Bobette
+module Bobette
   class GitHub
     attr_accessor :app
 
