@@ -7,16 +7,13 @@ class Bobette
     end
 
     def call(env)
-      body = ""; env["rack.input"].each { |c| body << c }
-      payload = JSON.parse(body)
+      payload = env["bobette.payload"]
 
-      payload["uri"]    = uri(payload["repository"].delete("url"))
+      payload["uri"]    = uri(payload["repository"].delete("url")).to_s
       payload["branch"] = payload.delete("ref").split("/").last
-      env["rack.input"] = [payload.to_json]
+      env["bobette.payload"] = payload
 
       @app.call(env)
-    rescue JSON::JSONError
-      Rack::Response.new("Unparsable payload", 400).finish
     end
 
     def uri(url)

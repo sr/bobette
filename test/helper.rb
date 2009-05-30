@@ -53,7 +53,11 @@ class Bobette::TestCase < Test::Unit::TestCase
   end
 
   def app
-    @app ||= Rack::Lint.new(Bobette.new(BuildableStub))
+    @app ||= Rack::Builder.new {
+      use Bobette::JSON
+      use Rack::Lint
+      run Bobette.new(BuildableStub)
+    }
   end
 
   def payload(repo, branch="master")

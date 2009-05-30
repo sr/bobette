@@ -1,11 +1,13 @@
 require File.dirname(__FILE__) + "/helper"
+
 require "bobette/github"
 
 class BobetteGitHubTest < Bobette::TestCase
   def app
     @app ||= Rack::Builder.new {
+      use Bobette::JSON
       use Bobette::GitHub
-      # TODO use Rack::Lint
+      use Rack::Lint
       run Bobette.new(BuildableStub)
     }
   end

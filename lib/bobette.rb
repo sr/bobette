@@ -1,5 +1,6 @@
 require "bob"
 require "json"
+require "bobette/json"
 
 class Bobette
   attr_accessor :buildable
@@ -9,8 +10,7 @@ class Bobette
   end
 
   def call(env)
-    body = ""; env["rack.input"].each{ |c| body << c }
-    payload = JSON.parse(body)
+    payload = env["bobette.payload"]
     commits = payload["commits"].collect { |c| c["id"] }
 
     action = Proc.new { @buildable.new(payload).build(commits) }
@@ -19,7 +19,5 @@ class Bobette
       EM.defer(action) : action.call
 
     Rack::Response.new("OK", 200).finish
-  rescue JSON::JSONError
-    Rack::Response.new("Unparsable payload", 400).finish
   end
 end
