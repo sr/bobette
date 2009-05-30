@@ -9,8 +9,8 @@ class Bobette
   end
 
   def call(env)
-    request = Rack::Request.new(env)
-    payload = JSON.parse(request.POST["payload"] || "")
+    body = ""; env["rack.input"].each{ |c| body << c }
+    payload = JSON.parse(body)
     commits = payload["commits"].collect { |c| c["id"] }
 
     action = Proc.new { @buildable.new(payload).build(commits) }
