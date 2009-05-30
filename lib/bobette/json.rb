@@ -1,3 +1,5 @@
+require "json"
+
 class Bobette
   class JSON
     def initialize(app)

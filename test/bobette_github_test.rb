@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + "/helper"
 
+require "bobette/json"
 require "bobette/github"
 
 class BobetteGitHubTest < Bobette::TestCase

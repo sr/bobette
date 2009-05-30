@@ -12,6 +12,7 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 
 require "bobette"
+require "bobette/json"
 
 require "helper/buildable_stub"
 require "helper/scm/git"

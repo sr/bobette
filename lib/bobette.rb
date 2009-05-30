@@ -1,6 +1,4 @@
 require "bob"
-require "json"
-require "bobette/json"
 
 class Bobette
   attr_accessor :buildable
