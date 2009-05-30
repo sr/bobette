@@ -8,8 +8,6 @@ class BobetteTest < Bobette::TestCase
     Bob.logger = Logger.new("/dev/null")
     Bob.directory = File.expand_path(File.dirname(__FILE__))
 
-    Bobette.buildable = Integrity::BuildableProject
-
     @repo = GitRepo.new(:my_test_project)
     @repo.create
     @repo.add_failing_commit
