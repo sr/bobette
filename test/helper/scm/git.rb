@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + "/abstract_scm_helper"
+require File.dirname(__FILE__) + "/abstract"
 
 module TestHelper
   class GitRepo < AbstractSCMRepo

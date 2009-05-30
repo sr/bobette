@@ -13,8 +13,8 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 
 require "bobette"
 
-require "helper/git_helper"
 require "helper/buildable_stub"
+require "helper/scm/git"
 
 class Test::Unit::TestSuite
   def empty?
