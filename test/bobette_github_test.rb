@@ -28,11 +28,10 @@ class BobetteGitHubTest < Bobette::TestCase
       assert response.ok?
 
       assert_equal(
-        { "branch"  => "master",
-          "commits" => commits,
-          "uri"     => "git://github.com/integrity/bob" },
-        JSON.parse(response.body)
-      )
+        { "uri"     => "git://github.com/integrity/bob",
+          "kind"    => "git",
+          "branch"  => "master",
+          "commits" => commits }, JSON.parse(response.body))
     }
   end
 end

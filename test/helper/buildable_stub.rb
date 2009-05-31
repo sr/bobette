@@ -5,7 +5,7 @@ module TestHelper
     attr_accessor :kind, :uri, :branch, :build_script
 
     def initialize(payload)
-      @kind = :git
+      @kind = payload["kind"]
       @uri  = payload["uri"]
       @branch = payload["branch"]
       @build_script = "./test"

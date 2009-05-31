@@ -38,7 +38,8 @@ class Bobette::TestCase < Test::Unit::TestCase
   def payload(repo, branch="master")
     { "branch"  => branch,
       "commits" => repo.commits.map { |c| {"id" => c[:identifier]} },
-      "uri"     => repo.path }
+      "uri"     => repo.path,
+      "kind"    => "git" }
   end
 end
 
