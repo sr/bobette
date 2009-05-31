@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + "/helper"
 class BobetteTest < Bobette::TestCase
   def setup
     Bob.logger = Logger.new("/dev/null")
-    Bob.directory = File.expand_path(File.dirname(__FILE__))
+    Bob.directory = "/tmp/bobette-builds"
 
     @repo = GitRepo.new(:my_test_project)
     @repo.create
@@ -24,7 +24,7 @@ class BobetteTest < Bobette::TestCase
   end
 
   def teardown
-    @repo.destroy
+    FileUtils.rm_rf(Bob.directory)
   end
 
   def test_valid_payload
