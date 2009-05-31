@@ -22,7 +22,7 @@ class BobetteGitHubTest < Bobette::TestCase
   end
 
   def test_transform_payload
-    commits = @repo.commits.map { |c| {"id" => c[:identifier]} }
+    commits = %w(b926de8 737bf26 8ba250e 78bb2de).map { |c| {"id" => c} }
 
     post("/", github_payload("integrity/bob", commits).to_json) { |response|
       assert response.ok?
@@ -31,7 +31,6 @@ class BobetteGitHubTest < Bobette::TestCase
         { "branch"  => "master",
           "commits" => commits,
           "uri"     => "git://github.com/integrity/bob" },
-
         JSON.parse(response.body)
       )
     }

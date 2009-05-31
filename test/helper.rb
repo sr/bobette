@@ -27,32 +27,6 @@ class Bobette::TestCase < Test::Unit::TestCase
   include Rack::Test::Methods
   include TestHelper
 
-  def setup
-    Bob.logger = Logger.new("/dev/null")
-    Bob.directory = File.expand_path(File.dirname(__FILE__))
-
-    @repo = GitRepo.new(:my_test_project)
-    @repo.create
-    3.times { |i|
-      i.odd? ? @repo.add_successful_commit : @repo.add_failing_commit
-    }
-
-    @metadata = {}
-    @builds   = {}
-
-    Beacon.watch(:start) { |commit_id, commit_info|
-      @metadata[commit_id] = commit_info
-    }
-
-    Beacon.watch(:finish) { |commit_id, status, output|
-      @builds[commit_id] = [status ? :successful : :failed, output]
-    }
-  end
-
-  def teardown
-    @repo.destroy
-  end
-
   def app
     @app ||= Rack::Builder.new {
       use Bobette::JSON
