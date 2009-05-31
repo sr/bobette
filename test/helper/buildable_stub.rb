@@ -4,6 +4,10 @@ module TestHelper
 
     attr_accessor :kind, :uri, :branch, :build_script
 
+    def self.from(payload)
+      new(payload)
+    end
+
     def initialize(payload)
       @kind = payload["kind"]
       @uri  = payload["uri"]

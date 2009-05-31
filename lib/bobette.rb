@@ -16,7 +16,7 @@ module Bobette
       payload = env["bobette.payload"]
       commits = payload["commits"].collect { |c| c["id"] }
 
-      action = Proc.new { @buildable.new(payload).build(commits) }
+      action = Proc.new { @buildable.from(payload).build(commits) }
 
       (Object.const_defined?(:EM) && EM.reactor_running?) ?
         EM.defer(action) : action.call
