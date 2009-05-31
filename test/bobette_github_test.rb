@@ -9,26 +9,31 @@ class BobetteGitHubTest < Bobette::TestCase
       use Bobette::JSON
       use Bobette::GitHub
       use Rack::Lint
-      run Bobette.new(BuildableStub)
+      run lambda { |env|
+        Rack::Response.new(env["bobette.payload"].to_json, 200).finish
+      }
     }
   end
 
-  def payload(repo, branch="master")
-    { "ref"   => "refs/heads/#{branch}",
-      "commits" => repo.commits.map { |c| {"id" => c[:identifier]} },
-      "repository" => {"url" => repo.path} }
+  def github_payload(repo, commits=[], branch="master")
+    { "ref"        => "refs/heads/#{branch}",
+      "commits"    => commits,
+      "repository" => {"url" => "http://github.com/#{repo}"} }
   end
 
-  def test_send_correct_payload
-    assert post("/", payload(@repo).to_json).ok?
+  def test_transform_payload
+    commits = @repo.commits.map { |c| {"id" => c[:identifier]} }
 
-    assert_equal 4, @metadata.count
-    assert_equal 4, @builds.count
+    post("/", github_payload("integrity/bob", commits).to_json) { |response|
+      assert response.ok?
 
-    commit = @repo.head
+      assert_equal(
+        { "branch"  => "master",
+          "commits" => commits,
+          "uri"     => "git://github.com/integrity/bob" },
 
-    assert_equal :failed, @builds[commit].first
-    assert_equal "Running tests...\n", @builds[commit].last
-    assert_equal "This commit will fail", @metadata[commit][:message]
+        JSON.parse(response.body)
+      )
+    }
   end
 end

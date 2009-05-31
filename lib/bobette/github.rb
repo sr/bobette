@@ -9,7 +9,7 @@ class Bobette
     def call(env)
       payload = env["bobette.payload"]
 
-      payload["uri"]    = uri(payload["repository"].delete("url")).to_s
+      payload["uri"]    = uri(payload.delete("repository")["url"]).to_s
       payload["branch"] = payload.delete("ref").split("/").last
       env["bobette.payload"] = payload
 
