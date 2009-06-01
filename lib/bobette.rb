@@ -6,7 +6,7 @@ module Bobette
   end
 
   class App
-    attr_accessor :buildable
+    attr_reader :buildable
 
     def initialize(buildable)
       @buildable = buildable

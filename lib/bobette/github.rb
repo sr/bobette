@@ -1,7 +1,5 @@
 module Bobette
   class GitHub
-    attr_accessor :app
-
     def initialize(app)
       @app = app
     end
