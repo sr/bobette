@@ -6,7 +6,9 @@ require "bobette/github"
 class BobetteGitHubTest < Bobette::TestCase
   def app
     @app ||= Rack::Builder.new {
-      use Bobette::JSON
+      use Bobette::JSON do |env|
+        Rack::Request.new(env).POST["payload"]
+      end
       use Bobette::GitHub
       use Rack::Lint
       run lambda { |env|
@@ -24,7 +26,7 @@ class BobetteGitHubTest < Bobette::TestCase
   def test_transform_payload
     commits = %w(b926de8 737bf26 8ba250e 78bb2de).map { |c| {"id" => c} }
 
-    post("/", github_payload("integrity/bob", commits).to_json) { |response|
+    post("/", :payload => github_payload("integrity/bob", commits).to_json) { |response|
       assert response.ok?
 
       assert_equal(
