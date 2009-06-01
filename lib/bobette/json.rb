@@ -5,7 +5,7 @@ module Bobette
     def initialize(app, &block)
       @app   = app
       @input = block || proc { |env|
-        "".inject(env["rack.input"]) { |s, c| s << c}
+        body=""; env["rack.input"].each{|c| body << c}; body
       }
     end
 
