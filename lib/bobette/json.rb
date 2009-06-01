@@ -2,13 +2,15 @@ require "json"
 
 module Bobette
   class JSON
-    def initialize(app)
-      @app = app
+    def initialize(app, &block)
+      @app   = app
+      @input = block || proc { |env|
+        "".inject(env["rack.input"]) { |s, c| s << c}
+      }
     end
 
     def call(env)
-      body = ""; env["rack.input"].each { |c| body << c }
-      env["bobette.payload"] = ::JSON.parse(body)
+      env["bobette.payload"] = ::JSON.parse(@input.call(env))
 
       @app.call(env)
     rescue ::JSON::JSONError
