@@ -1,6 +1,5 @@
 require "integrity"
 require "bobette"
-require "bobette/json"
 require "bobette/github"
 
 class Integrity::Project
@@ -14,7 +13,6 @@ class Integrity::Project
 end
 
 map "/github" do
-  use Bobette::JSON
   use Bobette::GitHub
   run Bobette.new(Integrity::Project)
 end
