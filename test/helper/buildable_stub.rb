@@ -1,21 +1,12 @@
 module TestHelper
-  class BuildableStub
-    include Bob::Buildable
-
-    attr_accessor :kind, :uri, :branch, :build_script
-
+  class BuildableStub < Bob::Test::BuildableStub
     def self.from(payload)
-      new(payload)
-    end
+      kind         = payload["kind"]
+      uri          = payload["uri"]
+      branch       = payload["branch"]
+      build_script = "./test"
 
-    def initialize(payload)
-      @kind = payload["kind"]
-      @uri  = payload["uri"]
-      @branch = payload["branch"]
-      @build_script = "./test"
-
-      @metadata = {}
-      @builds   = {}
+      new(kind, uri, branch, build_script)
     end
 
     def start_building(commit_id, commit_info)

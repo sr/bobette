@@ -1,6 +1,7 @@
 require "test/unit"
 require "rack/test"
 require "beacon"
+require "bob/test"
 
 begin
   require "ruby-debug"
@@ -13,23 +14,23 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 
 require "bobette"
 
-require "helper/buildable_stub"
-require "helper/scm/git"
-
 class Test::Unit::TestSuite
   def empty?
     false
   end
 end
 
+require "helper/buildable_stub"
+
 class Bobette::TestCase < Test::Unit::TestCase
   include Rack::Test::Methods
   include TestHelper
+  include Bob::Test
 
   def app
     @app ||= Rack::Builder.new {
       use Rack::Lint
-      run Bobette.new(BuildableStub)
+      run Bobette.new(TestHelper::BuildableStub)
     }
   end
 

@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency "rack-test"
     s.add_development_dependency "json"
     s.add_development_dependency "beacon"
+    s.add_development_dependency "sr-bob-test"
   end
 
   s.files = %w[
@@ -37,7 +38,5 @@ test/bobette_github_test.rb
 test/bobette_test.rb
 test/helper.rb
 test/helper/buildable_stub.rb
-test/helper/scm/abstract.rb
-test/helper/scm/git.rb
 ]
 end
