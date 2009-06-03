@@ -28,7 +28,7 @@ class BobetteTest < Bobette::TestCase
   end
 
   def test_valid_payload
-    assert post("/", payload(@repo).to_json).ok?
+    assert post("/", {}, "bobette.payload" => payload(@repo)).ok?
 
     assert_equal 4, @metadata.count
     assert_equal 4, @builds.count
@@ -41,15 +41,16 @@ class BobetteTest < Bobette::TestCase
   end
 
   def test_invalid_payload
-    assert post("/").client_error?
-    assert post("/", "</3").client_error?
+    # TODO
+    assert_raise(NoMethodError) { assert post("/") }
+    assert_raise(NoMethodError) { post("/", {}, "bobette.payload" => "</3") }
   end
 
   def test_with_em
     require "eventmachine"
 
     EM.run {
-      assert post("/", payload(@repo).to_json).ok?
+      assert post("/", {}, "bobette.payload" => payload(@repo)).ok?
       EM.stop_event_loop
     }
   end

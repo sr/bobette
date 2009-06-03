@@ -1,14 +1,10 @@
 require File.dirname(__FILE__) + "/helper"
 
-require "bobette/json"
 require "bobette/github"
 
 class BobetteGitHubTest < Bobette::TestCase
   def app
     @app ||= Rack::Builder.new {
-      use Bobette::JSON do |env|
-        Rack::Request.new(env).POST["payload"]
-      end
       use Bobette::GitHub
       use Rack::Lint
       run lambda { |env|
@@ -35,5 +31,10 @@ class BobetteGitHubTest < Bobette::TestCase
           "branch"  => "master",
           "commits" => commits }, JSON.parse(response.body))
     }
+  end
+
+  def test_invalid_payload
+    assert post("/").client_error?
+    assert post("/", {}, "bobette.payload" => "</3").client_error?
   end
 end
