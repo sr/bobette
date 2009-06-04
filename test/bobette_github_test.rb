@@ -4,8 +4,8 @@ require "bobette/github"
 
 class BobetteGitHubTest < Bobette::TestCase
   def app
-    @app ||= Rack::Builder.new {
-      use Bobette::GitHub
+    Rack::Builder.new {
+      use Bobette::GitHub do $head end
       use Rack::Lint
       run lambda { |env|
         Rack::Response.new(env["bobette.payload"].to_json, 200).finish
@@ -13,8 +13,13 @@ class BobetteGitHubTest < Bobette::TestCase
     }
   end
 
+  def setup
+    $head = false
+  end
+
   def github_payload(repo, commits=[], branch="master")
     { "ref"        => "refs/heads/#{branch}",
+      "after"      => commits.last["id"],
       "commits"    => commits,
       "repository" => {"url" => "http://github.com/#{repo}"} }
   end
@@ -30,6 +35,17 @@ class BobetteGitHubTest < Bobette::TestCase
           "kind"    => "git",
           "branch"  => "master",
           "commits" => commits }, JSON.parse(response.body))
+    }
+  end
+
+  def test_head_commit
+    $head = true
+    commits = %w(b926de8 737bf26 8ba250e 78bb2de).map { |c| {"id" => c} }
+
+    post("/", :payload => github_payload("integrity/bob", commits).to_json) { |response|
+      assert response.ok?
+
+      assert_equal [commits.last], JSON.parse(response.body)["commits"]
     }
   end
 
