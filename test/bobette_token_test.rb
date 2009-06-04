@@ -9,6 +9,7 @@ class BobetteTokenTest < Bobette::TestCase
         token == "secret"
       end
       use Rack::Lint
+      use Rack::ContentLength
       run proc { |env| [200, {"Content-Type" => "text/html"}, ["foo"]] }
     }
   end
