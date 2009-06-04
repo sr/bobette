@@ -5,7 +5,9 @@ require "bobette/github"
 class BobetteGitHubTest < Bobette::TestCase
   def app
     Rack::Builder.new {
-      use Bobette::GitHub do $head end
+      use Bobette::GitHub do |config|
+        config.head = $head
+      end
       use Rack::Lint
       run lambda { |env|
         Rack::Response.new(env["bobette.payload"].to_json, 200).finish
