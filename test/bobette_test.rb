@@ -1,6 +1,13 @@
 require File.dirname(__FILE__) + "/helper"
 
 class BobetteTest < Bobette::TestCase
+  def app
+    @app ||= Rack::Builder.new {
+      use Rack::Lint
+      run Bobette.new(TestHelper::BuildableStub)
+    }
+  end
+
   def setup
     Bob.logger = Logger.new("/dev/null")
     Bob.directory = "/tmp/bobette-builds"
