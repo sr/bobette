@@ -52,13 +52,4 @@ class BobetteTest < Bobette::TestCase
     assert_raise(NoMethodError) { assert post("/") }
     assert_raise(NoMethodError) { post("/", {}, "bobette.payload" => "</3") }
   end
-
-  def test_with_em
-    require "eventmachine"
-
-    EM.run {
-      assert post("/", {}, "bobette.payload" => payload(@repo)).ok?
-      EM.stop_event_loop
-    }
-  end
 end

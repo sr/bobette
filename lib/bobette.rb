@@ -15,11 +15,7 @@ module Bobette
     def call(env)
       payload = env["bobette.payload"]
       commits = payload["commits"].collect { |c| c["id"] }
-
-      action = Proc.new { @buildable.from(payload).build(commits) }
-
-      (Object.const_defined?(:EM) && EM.reactor_running?) ?
-        EM.defer(action) : action.call
+      @buildable.from(payload).build(commits)
 
       Rack::Response.new("OK", 200).finish
     end
