@@ -2,13 +2,9 @@ require "json"
 
 module Bobette
   class GitHub
-    attr_accessor :head
-
     def initialize(app, &block)
       @app  = app
-      @head = false
-
-      yield self if block_given?
+      @head = block || Proc.new { false }
     end
 
     def call(env)
@@ -17,7 +13,7 @@ module Bobette
       payload["kind"]   = "git"
       payload["uri"]    = uri(payload.delete("repository")["url"]).to_s
       payload["branch"] = payload.delete("ref").split("/").last
-      if (head = payload.delete("after")) && @head
+      if (head = payload.delete("after")) && @head.call
         payload["commits"] = [{"id" => head}]
       end
       env["bobette.payload"] = payload
