@@ -19,11 +19,12 @@ class BobetteGitHubTest < Bobette::TestCase
     $head = false
   end
 
-  def github_payload(repo, commits=[], branch="master")
+  def github_payload(repo, commits=[], is_private=false, branch="master")
     { "ref"        => "refs/heads/#{branch}",
       "after"      => commits.last["id"],
       "commits"    => commits,
-      "repository" => {"url" => "http://github.com/#{repo}"} }
+      "repository" => {"url"     => "http://github.com/#{repo}",
+                       "private" => is_private } }
   end
 
   def test_transform_payload
@@ -37,6 +38,11 @@ class BobetteGitHubTest < Bobette::TestCase
           "kind"    => "git",
           "branch"  => "master",
           "commits" => commits }, JSON.parse(response.body))
+    }
+
+    post("/", :payload => github_payload("integrity/bob", commits, true).to_json) { |response|
+      assert response.ok?
+      assert_equal "git@github.com:integrity/bob", JSON.parse(response.body)["uri"]
     }
   end
 
