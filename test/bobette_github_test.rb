@@ -19,7 +19,7 @@ class BobetteGitHubTest < Bobette::TestCase
     $head = false
   end
 
-  def github_payload(repo, commits=[], is_private=false, branch="master")
+  def payload(repo, commits=[], is_private=false, branch="master")
     { "ref"        => "refs/heads/#{branch}",
       "after"      => commits.last["id"],
       "commits"    => commits,
@@ -31,7 +31,7 @@ class BobetteGitHubTest < Bobette::TestCase
     commits = %w(b926de8 737bf26 8ba250e 78bb2de).map { |c| {"id" => c} }
 
     post("/", :payload =>
-         github_payload("integrity/bob", commits).to_json) { |response|
+         payload("integrity/bob", commits).to_json) { |response|
 
       assert response.ok?
       assert_equal(
@@ -42,7 +42,7 @@ class BobetteGitHubTest < Bobette::TestCase
     }
 
     post("/", :payload =>
-         github_payload("integrity/bob", commits, true).to_json) { |response|
+         payload("integrity/bob", commits, true).to_json) { |response|
 
       assert response.ok?
       assert_equal "git@github.com:integrity/bob", JSON.parse(response.body)["uri"]
@@ -54,7 +54,7 @@ class BobetteGitHubTest < Bobette::TestCase
     commits = %w(b926de8 737bf26 8ba250e 78bb2de).map { |c| {"id" => c} }
 
     post("/", :payload =>
-         github_payload("integrity/bob", commits).to_json) { |response|
+         payload("integrity/bob", commits).to_json) { |response|
 
       assert response.ok?
       assert_equal [commits.last], JSON.parse(response.body)["commits"]

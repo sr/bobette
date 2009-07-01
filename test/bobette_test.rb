@@ -4,15 +4,22 @@ class BobetteTest < Bobette::TestCase
   def app
     @app ||= Rack::Builder.new {
       use Rack::Lint
-      run Bobette.new(TestHelper::BuildableStub)
+      run Bobette.new(BuildableStub)
     }
+  end
+
+  def payload(repo, branch="master")
+    { "branch"  => branch,
+      "commits" => repo.commits.map { |c| {"id" => c[:identifier]} },
+      "uri"     => repo.path,
+      "scm"     => "git" }
   end
 
   def setup
     Bob.logger = Logger.new("/dev/null")
     Bob.directory = "/tmp/bobette-builds"
 
-    TestHelper::BuildableStub.no_buildable = false
+    BuildableStub.no_buildable = false
 
     @repo = GitRepo.new(:my_test_project)
     @repo.create
@@ -56,7 +63,7 @@ class BobetteTest < Bobette::TestCase
   end
 
   def test_no_buildable
-    TestHelper::BuildableStub.no_buildable = true
+    BuildableStub.no_buildable = true
 
     payload = payload(@repo).update("branch" => "unknown")
 

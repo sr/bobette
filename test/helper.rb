@@ -9,8 +9,8 @@ begin
 rescue LoadError
 end
 
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib"),
+  File.expand_path(File.dirname(__FILE__))
 
 require "bobette"
 
@@ -24,21 +24,7 @@ require "helper/buildable_stub"
 
 class Bobette::TestCase < Test::Unit::TestCase
   include Rack::Test::Methods
-  include TestHelper
   include Bob::Test
-
-  def app
-    @app ||= Rack::Builder.new {
-      use Rack::Lint
-      run Bobette.new(TestHelper::BuildableStub)
-    }
-  end
-
-  def payload(repo, branch="master")
-    { "branch"  => branch,
-      "commits" => repo.commits.map { |c| {"id" => c[:identifier]} },
-      "uri"     => repo.path,
-      "scm"     => "git" }
-  end
+  include Bobette::TestHelper
 end
 

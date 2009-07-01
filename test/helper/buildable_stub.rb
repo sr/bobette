@@ -1,4 +1,4 @@
-module TestHelper
+module Bobette::TestHelper
   class BuildableStub < Bob::Test::BuildableStub
     class << self
       attr_accessor :no_buildable
