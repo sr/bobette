@@ -12,6 +12,8 @@ class BobetteTest < Bobette::TestCase
     Bob.logger = Logger.new("/dev/null")
     Bob.directory = "/tmp/bobette-builds"
 
+    TestHelper::BuildableStub.no_buildable = false
+
     @repo = GitRepo.new(:my_test_project)
     @repo.create
     3.times { |i|
@@ -51,5 +53,15 @@ class BobetteTest < Bobette::TestCase
     # TODO
     assert_raise(NoMethodError) { assert post("/") }
     assert_raise(NoMethodError) { post("/", {}, "bobette.payload" => "</3") }
+  end
+
+  def test_no_buildable
+    TestHelper::BuildableStub.no_buildable = true
+
+    payload = payload(@repo).update("branch" => "unknown")
+
+    post("/", {}, "bobette.payload" => payload) { |response|
+      assert_equal 412, response.status
+    }
   end
 end

@@ -1,6 +1,12 @@
 module TestHelper
   class BuildableStub < Bob::Test::BuildableStub
+    class << self
+      attr_accessor :no_buildable
+    end
+
     def self.call(payload)
+      return nil if no_buildable
+
       kind         = payload["kind"]
       uri          = payload["uri"]
       branch       = payload["branch"]

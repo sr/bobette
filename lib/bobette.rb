@@ -13,11 +13,16 @@ module Bobette
     end
 
     def call(env)
-      payload = env["bobette.payload"]
-      commits = payload["commits"].collect { |c| c["id"] }
-      @buildable.call(payload).build(commits)
+      payload   = env["bobette.payload"]
+      commits   = payload["commits"].collect { |c| c["id"] }
+      buildable = @buildable.call(payload)
 
-      Rack::Response.new("OK", 200).finish
+      if buildable.respond_to?(:build)
+        buildable.build(commits)
+        [200, {"Content-Type" => "text/plain"}, ["OK"]]
+      else
+        [412, {"Content-Type" => "text/plain"}, ["Precondition Failed"]]
+      end
     end
   end
 end
