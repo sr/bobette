@@ -15,7 +15,7 @@ module Bobette
     def call(env)
       payload = env["bobette.payload"]
       commits = payload["commits"].collect { |c| c["id"] }
-      @buildable.from(payload).build(commits)
+      @buildable.call(payload).build(commits)
 
       Rack::Response.new("OK", 200).finish
     end

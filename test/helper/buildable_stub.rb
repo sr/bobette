@@ -1,6 +1,6 @@
 module TestHelper
   class BuildableStub < Bob::Test::BuildableStub
-    def self.from(payload)
+    def self.call(payload)
       kind         = payload["kind"]
       uri          = payload["uri"]
       branch       = payload["branch"]
