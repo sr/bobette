@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = "bobette"
-  s.version = "0.0.2"
-  s.date    = "2009-06-03"
+  s.version = "0.0.3"
+  s.date    = "2009-07-02"
 
   s.summary     = "Bob's sister"
   s.description = "Bob's sister"
@@ -12,11 +12,11 @@ Gem::Specification.new do |s|
   s.email   = "info@integrityapp.com"
 
   s.require_paths     = ["lib"]
-  #s.rubyforge_project = "integrity"
+  s.rubyforge_project = "integrity"
   s.has_rdoc          = false
   s.rubygems_version  = "1.3.1"
 
-  s.add_dependency "bob-the-builder"
+  s.add_dependency "bob"
   s.add_dependency "rack"
   # TODO json too?
 
@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency "rack-test"
     s.add_development_dependency "json"
     s.add_development_dependency "beacon"
-    s.add_development_dependency "sr-bob-test"
+    s.add_development_dependency "bob-test"
   end
 
   s.files = %w[
