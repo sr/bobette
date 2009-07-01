@@ -7,12 +7,12 @@ module TestHelper
     def self.call(payload)
       return nil if no_buildable
 
-      kind         = payload["kind"]
+      scm          = payload["scm"]
       uri          = payload["uri"]
       branch       = payload["branch"]
       build_script = "./test"
 
-      new(kind, uri, branch, build_script)
+      new(scm, uri, branch, build_script)
     end
 
     def start_building(commit_id, commit_info)

@@ -10,7 +10,7 @@ module Bobette
     def call(env)
       payload = Rack::Request.new(env).POST["payload"] || ""
       payload = JSON.parse(payload)
-      payload["kind"]   = "git"
+      payload["scm"]    = "git"
       payload["uri"]    = uri(payload.delete("repository"))
       payload["branch"] = payload.delete("ref").split("/").last
       if (head = payload.delete("after")) && @head.call

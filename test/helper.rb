@@ -38,7 +38,7 @@ class Bobette::TestCase < Test::Unit::TestCase
     { "branch"  => branch,
       "commits" => repo.commits.map { |c| {"id" => c[:identifier]} },
       "uri"     => repo.path,
-      "kind"    => "git" }
+      "scm"     => "git" }
   end
 end
 
