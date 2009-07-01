@@ -16,9 +16,8 @@ module Bobette
       if (head = payload.delete("after")) && @head.call
         payload["commits"] = [{"id" => head}]
       end
-      env["bobette.payload"] = payload
 
-      @app.call(env)
+      @app.call(env.update("bobette.payload" => payload))
     rescue JSON::JSONError
       Rack::Response.new("Unparsable payload", 400).finish
     end
