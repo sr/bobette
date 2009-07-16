@@ -26,5 +26,18 @@ class Bobette::TestCase < Test::Unit::TestCase
   include Rack::Test::Methods
   include Bob::Test
   include Bobette::TestHelper
+
+  def setup
+    Bob.logger    = Logger.new("/dev/null")
+    Bob.directory = File.dirname(__FILE__) + "/../tmp"
+
+    FileUtils.mkdir(Bob.directory)
+
+    BuildableStub.no_buildable = false
+  end
+
+  def teardown
+    FileUtils.rm_rf(Bob.directory)
+  end
 end
 

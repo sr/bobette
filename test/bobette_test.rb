@@ -16,10 +16,7 @@ class BobetteTest < Bobette::TestCase
   end
 
   def setup
-    Bob.logger = Logger.new("/dev/null")
-    Bob.directory = "/tmp/bobette-builds"
-
-    BuildableStub.no_buildable = false
+    super
 
     @repo = GitRepo.new(:my_test_project)
     @repo.create
@@ -37,10 +34,6 @@ class BobetteTest < Bobette::TestCase
     Beacon.watch(:finish) { |commit_id, status, output|
       @builds[commit_id] = [status ? :successful : :failed, output]
     }
-  end
-
-  def teardown
-    FileUtils.rm_rf(Bob.directory)
   end
 
   def test_valid_payload

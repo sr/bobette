@@ -16,6 +16,7 @@ class BobetteGitHubTest < Bobette::TestCase
   end
 
   def setup
+    super
     $head = false
   end
 
