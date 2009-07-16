@@ -14,15 +14,12 @@ module Bobette
 
     def call(env)
       payload   = env["bobette.payload"]
-      commits   = payload["commits"].collect { |c| c["id"] }
-      buildable = @buildable.call(payload)
 
-      if buildable.respond_to?(:build)
-        buildable.build(commits)
-        [200, {"Content-Type" => "text/plain"}, ["OK"]]
-      else
-        [412, {"Content-Type" => "text/plain"}, ["Precondition Failed"]]
-      end
+      @buildable.call(payload).each { |buildable|
+        buildable.build if buildable.respond_to?(:build)
+      }
+
+      [200, {"Content-Type" => "text/plain"}, ["OK"]]
     end
   end
 end

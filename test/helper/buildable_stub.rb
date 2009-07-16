@@ -5,14 +5,16 @@ module Bobette::TestHelper
     end
 
     def self.call(payload)
-      return nil if no_buildable
+      return [] if no_buildable
 
       scm          = payload["scm"]
       uri          = payload["uri"]
       branch       = payload["branch"]
       build_script = "./test"
 
-      new(scm, uri, branch, build_script)
+      payload["commits"].map { |commit|
+        new(scm, uri, branch, commit["id"], build_script)
+      }
     end
 
     def start_building(commit_id, commit_info)

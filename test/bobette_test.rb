@@ -61,7 +61,7 @@ class BobetteTest < Bobette::TestCase
     payload = payload(@repo).update("branch" => "unknown")
 
     post("/", {}, "bobette.payload" => payload) { |response|
-      assert_equal 412, response.status
+      assert_equal 200, response.status
     }
   end
 end
