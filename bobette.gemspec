@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = "bobette"
-  s.version = "0.0.3"
-  s.date    = "2009-07-02"
+  s.version = "0.0.4"
+  s.date    = "2009-07-17"
 
   s.summary     = "Bob's sister"
   s.description = "Bob's sister"
@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
     s.add_development_dependency "rack-test"
     s.add_development_dependency "json"
     s.add_development_dependency "beacon"
-    s.add_development_dependency "bob-test"
   end
 
   s.files = %w[
