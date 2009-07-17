@@ -1,5 +1,3 @@
-require "bob"
-
 module Bobette
   def self.new(buildable)
     App.new(buildable)

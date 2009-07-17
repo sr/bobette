@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.has_rdoc          = false
   s.rubygems_version  = "1.3.1"
 
-  s.add_dependency "bob"
   s.add_dependency "rack"
   # TODO json too?
 
