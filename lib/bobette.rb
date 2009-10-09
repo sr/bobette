@@ -4,8 +4,6 @@ module Bobette
   end
 
   class App
-    attr_reader :builder
-
     def initialize(builder)
       @builder = builder
     end
