@@ -4,49 +4,50 @@ class BobetteTest < Bobette::TestCase
   def app
     @app ||= Rack::Builder.new {
       use Rack::Lint
-      run Bobette.new(BuildableStub)
+      run Bobette.new(BuilderStub)
     }
   end
 
-  def payload(repo, branch="master")
-    { "branch"  => branch,
-      "commits" => repo.commits.map { |c| {"id" => c[:identifier]} },
-      "uri"     => repo.path,
-      "scm"     => "git" }
+  def payload(repo)
+    { "branch"  => repo.branch,
+      "commits" => repo.commits.map { |c| {"id" => c["identifier"]} },
+      "uri"     => repo.uri.to_s,
+      "scm"     => repo.scm }
   end
 
   def setup
     super
 
-    @repo = GitRepo.new(:my_test_project)
+    @repo = GitRepo.new("my_test_project")
     @repo.create
     3.times { |i|
       i.odd? ? @repo.add_successful_commit : @repo.add_failing_commit
     }
 
-    @metadata = {}
-    @builds   = {}
+    @commits = {}
+    @builds  = {}
 
-    Beacon.watch(:start) { |commit_id, commit_info|
-      @metadata[commit_id] = commit_info
+    Beacon.watch(:start) { |commit|
+      @id = commit["identifier"]
+      @commits[@id] = commit
     }
 
-    Beacon.watch(:finish) { |commit_id, status, output|
-      @builds[commit_id] = [status ? :successful : :failed, output]
+    Beacon.watch(:finish) { |status, output|
+      @builds[@id] = [status ? :successful : :failed, output]
     }
   end
 
   def test_valid_payload
     assert post("/", {}, "bobette.payload" => payload(@repo)).ok?
 
-    assert_equal 4, @metadata.count
     assert_equal 4, @builds.count
+    assert_equal 4, @commits.count
 
     commit = @repo.head
 
     assert_equal :failed, @builds[commit].first
     assert_equal "Running tests...\n", @builds[commit].last
-    assert_equal "This commit will fail", @metadata[commit][:message]
+    assert_equal "This commit will fail", @commits[commit]["message"]
   end
 
   def test_invalid_payload
@@ -56,7 +57,7 @@ class BobetteTest < Bobette::TestCase
   end
 
   def test_no_buildable
-    BuildableStub.no_buildable = true
+    BuilderStub.no_buildable = true
 
     payload = payload(@repo).update("branch" => "unknown")
 

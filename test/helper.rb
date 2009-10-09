@@ -20,7 +20,7 @@ class Test::Unit::TestSuite
   end
 end
 
-require "helper/buildable_stub"
+require "helper/builder_stub"
 
 class Bobette::TestCase < Test::Unit::TestCase
   include Rack::Test::Methods
@@ -33,7 +33,7 @@ class Bobette::TestCase < Test::Unit::TestCase
 
     FileUtils.mkdir(Bob.directory)
 
-    BuildableStub.no_buildable = false
+    BuilderStub.no_buildable = false
   end
 
   def teardown
