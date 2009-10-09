@@ -10,7 +10,7 @@ class BobetteTest < Bobette::TestCase
 
   def payload(repo)
     { "branch"  => repo.branch,
-      "commits" => repo.commits.map { |c| {"id" => c["identifier"]} },
+      "commits" => repo.commits.collect { |c| c["identifier"] },
       "uri"     => repo.uri.to_s,
       "scm"     => repo.scm }
   end
@@ -20,9 +20,7 @@ class BobetteTest < Bobette::TestCase
 
     @repo = GitRepo.new("my_test_project")
     @repo.create
-    3.times { |i|
-      i.odd? ? @repo.add_successful_commit : @repo.add_failing_commit
-    }
+    3.times{|i|i.odd? ? @repo.add_successful_commit : @repo.add_failing_commit}
 
     @commits = {}
     @builds  = {}
@@ -51,18 +49,13 @@ class BobetteTest < Bobette::TestCase
   end
 
   def test_invalid_payload
-    # TODO
     assert_raise(NoMethodError) { assert post("/") }
     assert_raise(NoMethodError) { post("/", {}, "bobette.payload" => "</3") }
   end
 
   def test_no_buildable
     BuilderStub.no_buildable = true
-
     payload = payload(@repo).update("branch" => "unknown")
-
-    post("/", {}, "bobette.payload" => payload) { |response|
-      assert_equal 200, response.status
-    }
+    post("/", {}, "bobette.payload" => payload){|r| assert_equal 200, r.status}
   end
 end
