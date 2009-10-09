@@ -11,12 +11,7 @@ module Bobette
     end
 
     def call(env)
-      payload   = env["bobette.payload"]
-
-      @builder.call(payload).each { |builder|
-        builder.build if builder.respond_to?(:build)
-      }
-
+      @builder.call(env["bobette.payload"]).each { |b| b.build }
       [200, {"Content-Type" => "text/plain"}, ["OK"]]
     end
   end
