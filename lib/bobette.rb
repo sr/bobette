@@ -1,20 +1,20 @@
 module Bobette
-  def self.new(buildable)
-    App.new(buildable)
+  def self.new(builder)
+    App.new(builder)
   end
 
   class App
-    attr_reader :buildable
+    attr_reader :builder
 
-    def initialize(buildable)
-      @buildable = buildable
+    def initialize(builder)
+      @builder = builder
     end
 
     def call(env)
       payload   = env["bobette.payload"]
 
-      @buildable.call(payload).each { |buildable|
-        buildable.build if buildable.respond_to?(:build)
+      @builder.call(payload).each { |builder|
+        builder.build if builder.respond_to?(:build)
       }
 
       [200, {"Content-Type" => "text/plain"}, ["OK"]]
