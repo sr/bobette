@@ -22,12 +22,14 @@ Gem::Specification.new do |s|
 LICENSE
 README.md
 Rakefile
-examples/integrity.ru
+bobette.gemspec
 lib/bobette.rb
 lib/bobette/github.rb
 test/bobette_github_test.rb
 test/bobette_test.rb
+test/deps.rip
 test/helper.rb
-test/helper/buildable_stub.rb
+test/helper/builder_stub.rb
+test/helper/github_payload.js
 ]
 end
