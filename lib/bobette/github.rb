@@ -10,13 +10,15 @@ module Bobette
     def call(env)
       payload = Rack::Request.new(env).POST["payload"] || ""
       payload = JSON.parse(payload)
+      payload.delete("before")
       payload["scm"]    = "git"
       payload["uri"]    = uri(payload.delete("repository"))
       payload["branch"] = payload.delete("ref").split("/").last
       if (head = payload.delete("after")) && @head.call
-        payload["commits"] = [{"id" => head}]
+        payload["commits"] = [head]
+      else
+        payload["commits"] = payload.delete("commits").collect { |c| c["id"] }
       end
-
       @app.call(env.update("bobette.payload" => payload))
     rescue JSON::JSONError
       Rack::Response.new("Unparsable payload", 400).finish
