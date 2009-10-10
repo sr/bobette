@@ -9,9 +9,6 @@ begin
 rescue LoadError
 end
 
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib"),
-  File.expand_path(File.dirname(__FILE__))
-
 require "bobette"
 
 class Test::Unit::TestSuite
