@@ -46,6 +46,8 @@ class BobetteTest < Bobette::TestCase
     assert_equal :failed, @builds[commit].first
     assert_equal "Running tests...\n", @builds[commit].last
     assert_equal "This commit will fail", @commits[commit]["message"]
+    assert_equal "John Doe <johndoe@example.org>", @commits[commit]["author"]
+    assert_kind_of Time, @commits[commit]["committed_at"]
   end
 
   def test_invalid_payload
@@ -56,6 +58,6 @@ class BobetteTest < Bobette::TestCase
   def test_no_buildable
     BuilderStub.no_buildable = true
     payload = payload(@repo).update("branch" => "unknown")
-    post("/", {}, "bobette.payload" => payload){|r| assert_equal 200, r.status}
+    post("/", {}, "bobette.payload" => payload) { |r| r.ok? }
   end
 end
