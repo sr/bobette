@@ -17,13 +17,6 @@ Gem::Specification.new do |s|
   s.rubygems_version  = "1.3.1"
 
   s.add_dependency "rack"
-  # TODO json too?
-
-  if s.respond_to?(:add_development_dependency)
-    s.add_development_dependency "rack-test"
-    s.add_development_dependency "json"
-    s.add_development_dependency "beacon"
-  end
 
   s.files = %w[
 LICENSE
