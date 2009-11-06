@@ -10,7 +10,7 @@ class BobetteTest < Bobette::TestCase
 
   def payload(repo)
     { "branch"  => repo.branch,
-      "commits" => repo.commits.collect { |c| c["identifier"] },
+      "commits" => repo.commits.collect { |c| c["id"] },
       "uri"     => repo.uri.to_s,
       "scm"     => repo.scm }
   end
@@ -26,7 +26,7 @@ class BobetteTest < Bobette::TestCase
     @builds  = {}
 
     Beacon.watch(:start) { |commit|
-      @id = commit["identifier"]
+      @id = commit["id"]
       @commits[@id] = commit
     }
 
@@ -47,7 +47,7 @@ class BobetteTest < Bobette::TestCase
     assert_equal "Running tests...\n", @builds[commit].last
     assert_equal "This commit will fail", @commits[commit]["message"]
     assert_equal "John Doe <johndoe@example.org>", @commits[commit]["author"]
-    assert_kind_of Time, @commits[commit]["committed_at"]
+    assert_kind_of Time, @commits[commit]["timestamp"]
   end
 
   def test_invalid_payload
