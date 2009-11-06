@@ -8,7 +8,7 @@ module Bobette::TestHelper
       return [] if no_buildable
 
       payload.delete("commits").collect { |c|
-        new(payload.merge("command" => "./test", "commit" => c))
+        new(payload.merge("command" => "./test", "commit" => c["id"]))
       }
     end
 

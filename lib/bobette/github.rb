@@ -15,9 +15,9 @@ module Bobette
       payload["uri"]    = uri(payload.delete("repository"))
       payload["branch"] = payload.delete("ref").split("/").last
       if (head = payload.delete("after")) && @head.call
-        payload["commits"] = [head]
+        payload["commits"] = [payload["commits"].detect{|c| c["id"] == head }]
       else
-        payload["commits"] = payload.delete("commits").collect { |c| c["id"] }
+        payload["commits"] = payload.delete("commits")
       end
       @app.call(env.update("bobette.payload" => payload))
     rescue JSON::JSONError

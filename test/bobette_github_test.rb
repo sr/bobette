@@ -21,15 +21,23 @@ class BobetteGitHubTest < Bobette::TestCase
   end
 
   def test_transform_payload
-    commits = JSON.parse(@payload)["commits"].collect {|c| c["id"]}
+    commits = JSON.parse(@payload)["commits"]
 
     post("/", :payload => @payload) { |response|
+      payload = JSON.parse(response.body)
+
       assert response.ok?
-      assert_equal(
-        { "uri"     => "git://github.com/sr/bob",
-          "scm"     => "git",
-          "branch"  => "master",
-          "commits" => commits }, JSON.parse(response.body))
+
+      assert_equal "git",                     payload["scm"]
+      assert_equal "git://github.com/sr/bob", payload["uri"]
+      assert_equal "master",                  payload["branch"]
+      assert_equal 2,                         payload["commits"].size
+
+      commit = payload["commits"].first
+
+      assert_equal "c6dd001c1a95763b2ea62201b73005a6b86c048e", commit["id"]
+      assert_match /instead of private #path method/, commit["message"]
+      assert_equal "2009-09-30T06:10:44-07:00", commit["timestamp"]
     }
   end
 
@@ -46,9 +54,16 @@ class BobetteGitHubTest < Bobette::TestCase
   def test_head_commit
     $head = true
     post("/", :payload => @payload) { |response|
+      payload = JSON.parse(response.body)
+
       assert response.ok?
-      assert_equal ["b2f5af7a7cd70e69d1145a6b4ddbf87df22bd343"],
-        JSON.parse(response.body)["commits"]
+      assert_equal 1, payload["commits"].size
+
+      commit = payload["commits"].first
+
+      assert_equal "b2f5af7a7cd70e69d1145a6b4ddbf87df22bd343", commit["id"]
+      assert_equal "Add rip files",             commit["message"]
+      assert_equal "2009-09-30T06:16:12-07:00", commit["timestamp"]
     }
   end
 

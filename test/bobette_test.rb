@@ -10,7 +10,7 @@ class BobetteTest < Bobette::TestCase
 
   def payload(repo)
     { "branch"  => repo.branch,
-      "commits" => repo.commits.collect { |c| c["id"] },
+      "commits" => repo.commits,
       "uri"     => repo.uri.to_s,
       "scm"     => repo.scm }
   end
