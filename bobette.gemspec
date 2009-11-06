@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = "bobette"
-  s.version = "0.0.5"
-  s.date    = "2009-10-10"
+  s.version = "0.0.6"
+  s.date    = "2009-11-06"
 
   s.summary     = "Bob's sister"
   s.description = "Bob's sister"
